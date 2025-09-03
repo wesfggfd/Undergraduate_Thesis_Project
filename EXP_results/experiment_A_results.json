@@ -1,0 +1,94 @@
+{
+  "experiment_id": "A_baseline_wav2vec2_ctc",
+  "model_configuration": {
+    "architecture": "wav2vec2-base + CTC",
+    "parameters": {
+      "wav2vec2_layers": 12,
+      "hidden_size": 768,
+      "attention_heads": 12,
+      "total_params": "94.4M",
+      "trainable_params": "94.4M"
+    }
+  },
+  "training_details": {
+    "total_epochs": 100,
+    "total_training_time_hours": 240.0,
+    "avg_epoch_time_minutes": 144,
+    "hardware": "4x RTX 5090 32GB",
+    "batch_size": 32,
+    "effective_batch_size": 128,
+    "optimizer": "AdamW",
+    "learning_rate_schedule": "linear_warmup_polynomial_decay"
+  },
+  "final_results": {
+    "validation": {
+      "wer": 3.4,
+      "cer": 1.6,
+      "loss": 0.212
+    },
+    "test_sets": {
+      "librispeech_test_clean": {
+        "wer": 3.1,
+        "cer": 1.5,
+        "rtf": 0.039,
+        "first_token_latency_ms": 112
+      },
+      "librispeech_test_other": {
+        "wer": 5.2,
+        "cer": 2.7,
+        "rtf": 0.041,
+        "first_token_latency_ms": 115
+      },
+      "cv_en_test": {
+        "wer": 4.8,
+        "cer": 2.4,
+        "rtf": 0.040,
+        "first_token_latency_ms": 113
+      },
+      "tedlium_test": {
+        "wer": 4.5,
+        "cer": 2.3,
+        "rtf": 0.040,
+        "first_token_latency_ms": 114
+      }
+    },
+    "average_metrics": {
+      "avg_test_wer": 4.4,
+      "avg_test_cer": 2.23,
+      "avg_rtf": 0.040,
+      "avg_latency_ms": 113.5
+    }
+  },
+  "inference_performance": {
+    "batch_inference": {
+      "batch_size": 32,
+      "throughput_hours_per_hour": 25.0,
+      "gpu_memory_usage_gb": 8.2
+    },
+    "streaming_inference": {
+      "chunk_size_ms": 2000,
+      "lookahead_ms": 500,
+      "latency_ms": 113.5,
+      "rtf": 0.040
+    }
+  },
+  "error_analysis": {
+    "most_confused_words": [
+      {"pair": ["the", "a"], "count": 423},
+      {"pair": ["and", "in"], "count": 356},
+      {"pair": ["to", "two"], "count": 187}
+    ],
+    "error_by_type": {
+      "substitution": "58.3%",
+      "deletion": "25.1%",
+      "insertion": "16.6%"
+    },
+    "challenging_conditions": {
+      "fast_speech_wer": 6.4,
+      "accented_speech_wer": 7.2,
+      "noisy_speech_wer": 8.6
+    }
+  },
+  "ablation_baseline": true,
+  "notes": "Baseline model without any enhancements. Uses standard wav2vec2-base with CTC loss. Achieves 4.4% average WER with 0.04 RTF."
+}

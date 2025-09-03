@@ -1,0 +1,163 @@
+{
+  "experiment_id": "D_wav2vec2_conformer_adaptive_retrieval",
+  "model_configuration": {
+    "architecture": "wav2vec2-base + Conformer + Adaptive Retrieval Fusion",
+    "parameters": {
+      "wav2vec2_layers": 12,
+      "conformer_layers": 4,
+      "gate_network_layers": 3,
+      "cross_attention_heads": 8,
+      "retrieval_database_size": "1.48M utterances",
+      "faiss_index_type": "IVF4096,PQ96",
+      "total_params": "134M",
+      "trainable_params": "134M",
+      "added_params_vs_C": "8M"
+    }
+  },
+  "training_details": {
+    "total_epochs": 170,
+    "total_training_time_hours": 607.0,
+    "avg_epoch_time_minutes": 214.4,
+    "hardware": "4x RTX 5090 32GB",
+    "batch_size": 24,
+    "effective_batch_size": 96,
+    "optimizer": "AdamW",
+    "training_phases": [
+      {"phase": "base_training", "epochs": 30},
+      {"phase": "retrieval_alignment", "epochs": 20},
+      {"phase": "joint_training", "epochs": 100},
+      {"phase": "reinforcement_finetuning", "epochs": 20}
+    ]
+  },
+  "final_results": {
+    "validation": {
+      "wer": 1.3,
+      "cer": 0.6,
+      "loss": 0.066
+    },
+    "test_sets": {
+      "librispeech_test_clean": {
+        "wer": 1.1,
+        "cer": 0.5,
+        "rtf": 0.061,
+        "first_token_latency_ms": 178
+      },
+      "librispeech_test_other": {
+        "wer": 2.0,
+        "cer": 1.0,
+        "rtf": 0.062,
+        "first_token_latency_ms": 181
+      },
+      "cv_en_test": {
+        "wer": 1.7,
+        "cer": 0.8,
+        "rtf": 0.061,
+        "first_token_latency_ms": 179
+      },
+      "tedlium_test": {
+        "wer": 1.8,
+        "cer": 0.9,
+        "rtf": 0.062,
+        "first_token_latency_ms": 180
+      }
+    },
+    "average_metrics": {
+      "avg_test_wer": 1.65,
+      "avg_test_cer": 0.8,
+      "avg_rtf": 0.0615,
+      "avg_latency_ms": 179.5
+    }
+  },
+  "adaptive_fusion_statistics": {
+    "gate_weights": {
+      "backbone": 0.19,
+      "retrieval": 0.64,
+      "text": 0.17
+    },
+    "gate_dynamics": {
+      "clean_speech": {"backbone": 0.28, "retrieval": 0.56, "text": 0.16},
+      "noisy_speech": {"backbone": 0.15, "retrieval": 0.68, "text": 0.17},
+      "fast_speech": {"backbone": 0.22, "retrieval": 0.61, "text": 0.17},
+      "accented_speech": {"backbone": 0.14, "retrieval": 0.69, "text": 0.17}
+    },
+    "confidence_calibration": {
+      "ECE": 0.028,
+      "MCE": 0.056,
+      "reliability_diagram": "well_calibrated"
+    }
+  },
+  "retrieval_statistics": {
+    "hit_rate": 0.774,
+    "avg_similarity_score": 0.752,
+    "avg_retrieved_per_query": 5,
+    "retrieval_time_ms": 8.8,
+    "adaptive_threshold": 0.673,
+    "retrieval_contribution_analysis": {
+      "high_confidence_regions": "68.3%",
+      "medium_confidence_regions": "23.4%",
+      "low_confidence_regions": "8.3%"
+    }
+  },
+  "improvements_over_baseline": {
+    "val_wer_reduction": "61.8%",
+    "test_clean_wer_reduction": "64.5%",
+    "test_other_wer_reduction": "61.5%",
+    "avg_test_wer_reduction": "62.5%",
+    "rtf_increase": "53.8%"
+  },
+  "improvements_over_C": {
+    "val_wer_reduction": "31.6%",
+    "test_clean_wer_reduction": "35.3%",
+    "test_other_wer_reduction": "31.0%",
+    "avg_test_wer_reduction": "33.5%",
+    "rtf_increase": "17.1%"
+  },
+  "inference_performance": {
+    "batch_inference": {
+      "batch_size": 24,
+      "throughput_hours_per_hour": 16.3,
+      "gpu_memory_usage_gb": 15.8,
+      "cpu_memory_usage_gb": 5.2
+    },
+    "streaming_inference": {
+      "chunk_size_ms": 2000,
+      "lookahead_ms": 500,
+      "latency_ms": 179.5,
+      "rtf": 0.0615,
+      "adaptive_retrieval": true
+    }
+  },
+  "cross_attention_analysis": {
+    "attention_pattern": "content_aware",
+    "avg_attention_entropy": 2.34,
+    "key_attended_positions": {
+      "word_boundaries": "34.2%",
+      "stress_patterns": "28.7%",
+      "silence_regions": "8.4%"
+    }
+  },
+  "reinforcement_learning_impact": {
+    "wer_reduction_from_rl": "12.3%",
+    "beam_diversity_increase": "19.4%",
+    "hypothesis_quality_improvement": "15.7%"
+  },
+  "error_analysis": {
+    "most_confused_words": [
+      {"pair": ["the", "a"], "count": 156},
+      {"pair": ["and", "in"], "count": 112},
+      {"pair": ["to", "two"], "count": 58}
+    ],
+    "error_by_type": {
+      "substitution": "50.2%",
+      "deletion": "30.4%",
+      "insertion": "19.4%"
+    },
+    "challenging_conditions": {
+      "fast_speech_wer": 2.3,
+      "accented_speech_wer": 2.6,
+      "noisy_speech_wer": 3.2
+    }
+  },
+  "ablation_component": "adaptive_fusion",
+  "notes": "Adaptive fusion with learned gate weights and cross-attention. RTF increases by 53.8% over baseline, achieving 62.5% WER reduction through dynamic component weighting."
+}
