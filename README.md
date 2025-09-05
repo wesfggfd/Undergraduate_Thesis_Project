@@ -201,7 +201,7 @@ DTW对齐实现: 输入特征```[T1, 512]```，检索特征```[T2, 512]```。计
 
     步骤4.4 - 第四阶段：特定优化
 
-    强化学习微调（SCST) - 采样策略：Beam search(k=5)得到baseline。从模型分布采样5个候选。计算奖励：``R = WER(baseline) - WER(sample)``。策略梯度：``∇L = -R × ∇logP(sample)``。混合损失：``0.7×监督损失 + 0.3×RL损失``。学习率5e-6，训练20 epochs。
+    强化学习微调（SCST) - 采样策略：Beam search (k=5) 得到 baseline。从模型分布采样5个候选。计算奖励：``R = WER(baseline) - WER(sample)``。策略梯度：``∇L = -R × ∇logP(sample)``。混合损失：``0.7×监督损失 + 0.3×RL损失``。学习率5e-6，训练20 epochs。
 
     领域自适应- 在TED-LIUM数据上微调。调整检索权重，优先检索TED-LIUM内容。学习TED特有的表达方式和术语。保持在其他数据集上的性能（使用EWC避免遗忘）。
 
