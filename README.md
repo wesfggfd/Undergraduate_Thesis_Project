@@ -243,7 +243,7 @@ DTW对齐实现: 输入特征```[T1, 512]```，检索特征```[T2, 512]```。计
 
     评估集组织- Clean集：LibriSpeech-test-clean(2620条)，标准发音。Other集：LibriSpeech-test-other(2939条)，包含口音噪声。多样化集：CV-EN-test(16000条)，各种口音和环境。演讲集：TED-LIUM-test(1495条)，专业演讲内容。
 
-    指标计算实现。WER：使用``jiwer.wer(reference, hypothesis)``。CER：字符级别错误率。SER：完全正确的句子比例。RTF：处理时间/音频时长。首字延迟：第一个词输出的时间。
+    指标计算实现。WER：使用``jiwer.wer(reference, hypothesis)``。CER：字符级别错误率。RTF：处理时间/音频时长。首字延迟：第一个词输出的时间。
   
 - 步骤6.2 - 消融实验
 
